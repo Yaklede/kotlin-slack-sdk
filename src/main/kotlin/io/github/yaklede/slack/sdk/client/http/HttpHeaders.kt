@@ -1,6 +1,6 @@
-package io.github.yaklede.slack.sdk.client
+package io.github.yaklede.slack.sdk.client.http
 
-import io.github.yaklede.slack.sdk.client.enums.MediaType
+import io.github.yaklede.slack.sdk.client.http.enums.MediaType
 
 
 class HttpHeaders {

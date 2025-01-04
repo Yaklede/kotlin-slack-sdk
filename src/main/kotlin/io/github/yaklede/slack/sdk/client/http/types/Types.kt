@@ -1,4 +1,4 @@
-package io.github.yaklede.slack.sdk.client
+package io.github.yaklede.slack.sdk.client.http.types
 
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse

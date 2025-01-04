@@ -1,16 +1,13 @@
-package com.example.http.client
+package io.github.yaklede.slack.sdk.client.http
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.type.TypeReference
-import io.github.yaklede.slack.sdk.client.HttpEntity
-import io.github.yaklede.slack.sdk.client.HttpHeaders
-import io.github.yaklede.slack.sdk.client.HttpTemplate
-import io.github.yaklede.slack.sdk.client.enums.HttpMethod
-import io.github.yaklede.slack.sdk.client.enums.MediaType
+import io.github.yaklede.slack.sdk.client.http.enums.HttpMethod
+import io.github.yaklede.slack.sdk.client.http.enums.MediaType
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
-class RestTemplateTest {
+class HttpTemplateTest {
 
     private val uri = "https://api.upbit.com/v1/ticker?markets=KRW-BTC"
 

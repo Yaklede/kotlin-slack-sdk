@@ -1,4 +1,4 @@
-package io.github.yaklede.slack.sdk.client
+package io.github.yaklede.slack.sdk.client.http
 
 class HttpEntity<T>(
     val body: T?,

@@ -1,4 +1,4 @@
-package io.github.yaklede.slack.sdk.client.enums
+package io.github.yaklede.slack.sdk.client.http.enums
 
 enum class HttpMethod {
     GET,

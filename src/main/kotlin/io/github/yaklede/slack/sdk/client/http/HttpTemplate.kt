@@ -1,9 +1,9 @@
-package io.github.yaklede.slack.sdk.client
+package io.github.yaklede.slack.sdk.client.http
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.github.yaklede.slack.sdk.client.enums.HttpMethod
+import io.github.yaklede.slack.sdk.client.http.enums.HttpMethod
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
