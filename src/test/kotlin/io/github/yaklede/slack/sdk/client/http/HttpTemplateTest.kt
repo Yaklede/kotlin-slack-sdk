@@ -34,7 +34,7 @@ class HttpTemplateTest {
         )
 
         Assertions.assertThat(result).isNotEmpty
-        Assertions.assertThat(result.first()).isInstanceOf(MarketData::class.java)
+        Assertions.assertThat(result?.first()).isInstanceOf(MarketData::class.java)
     }
 }
 data class MarketData(
