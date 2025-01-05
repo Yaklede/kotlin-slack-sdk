@@ -12,3 +12,19 @@ data class ApiTestRequest(
     override val method: HttpMethod = HttpMethod.POST
     override val endpoint: String = "api.test"
 }
+
+class ApiTestRequestBuilder {
+    lateinit var error: String
+    lateinit var foo: String
+
+    fun build(): ApiTestRequest {
+        return ApiTestRequest(
+            error = error,
+            foo = foo,
+        )
+    }
+}
+
+fun apiTestApiRequest(apiTestRequestBuilderBlock: ApiTestRequestBuilder.() -> Unit): ApiTestRequest {
+    return ApiTestRequestBuilder().apply(apiTestRequestBuilderBlock).build()
+}
