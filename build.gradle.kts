@@ -29,6 +29,9 @@ dependencies {
 
     //assertj
     testImplementation("org.assertj:assertj-core:3.24.2")
+
+    //config
+    testImplementation("com.natpryce:konfig:1.6.10.0")
 }
 
 tasks.test {

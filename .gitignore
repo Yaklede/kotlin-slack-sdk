@@ -21,3 +21,5 @@ gradle-app.setting
 .classpath
 
 .idea
+
+/src/test/resources/local.properties
