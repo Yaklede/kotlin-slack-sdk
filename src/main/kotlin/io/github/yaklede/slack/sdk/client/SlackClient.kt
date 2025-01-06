@@ -1,7 +1,9 @@
 package io.github.yaklede.slack.sdk.client
 
 import io.github.yaklede.slack.sdk.client.http.SlackTemplate
+import io.github.yaklede.slack.sdk.request.apps.AppsActivitiesListRequest
 import io.github.yaklede.slack.sdk.request.test.ApiTestRequest
+import io.github.yaklede.slack.sdk.response.apps.AppsActivitiesListResponse
 import io.github.yaklede.slack.sdk.response.test.ApiTestResponse
 
 class SlackClient(
@@ -18,5 +20,8 @@ class SlackClient(
         return slackTemplate.execute(request, ApiTestResponse::class)
     }
 
+    @Deprecated("only workflows apps")
+    fun appsActivitiesList(request: AppsActivitiesListRequest): AppsActivitiesListResponse? {
+        return slackTemplate.execute(request, AppsActivitiesListResponse::class)
     }
 }

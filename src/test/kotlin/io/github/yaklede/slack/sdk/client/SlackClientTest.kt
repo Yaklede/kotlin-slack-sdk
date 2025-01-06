@@ -3,10 +3,12 @@ package io.github.yaklede.slack.sdk.client
 import com.natpryce.konfig.ConfigurationProperties
 import com.natpryce.konfig.Key
 import com.natpryce.konfig.stringType
+import io.github.yaklede.slack.sdk.request.apps.AppsActivitiesListRequest
 import io.github.yaklede.slack.sdk.request.test.ApiTestRequest
 import io.github.yaklede.slack.sdk.request.test.apiTestApiRequest
 import io.github.yaklede.slack.sdk.response.test.ApiTestResponse
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class SlackClientTest {
@@ -49,4 +51,20 @@ class SlackClientTest {
         //then
         Assertions.assertThat(data).isInstanceOf(ApiTestResponse::class.java)
     }
+
+    @Test
+    @Disabled
+    fun appsActivitiesListTest() {
+        //given
+        val request = AppsActivitiesListRequest(
+            appId = "appId"
+        )
+
+        //when
+        val data = client.appsActivitiesList(request)
+
+        //then
+        Assertions.assertThat(data).isInstanceOf(ApiTestResponse::class.java)
+    }
+
 }
