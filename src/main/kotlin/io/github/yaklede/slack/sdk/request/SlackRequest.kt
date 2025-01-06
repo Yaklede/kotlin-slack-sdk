@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import io.github.yaklede.slack.sdk.client.http.enums.HttpMethod
 import io.github.yaklede.slack.sdk.client.http.enums.MediaType
 
-interface SlackRequest {
+sealed interface SlackRequest {
     @get:JsonIgnore
     val endpoint: String
     @get:JsonIgnore
@@ -12,3 +12,6 @@ interface SlackRequest {
     @get:JsonIgnore
     val contentType: MediaType
 }
+
+interface BotTokenSlackRequest: SlackRequest
+interface UserTokenSlackReqeust: SlackRequest

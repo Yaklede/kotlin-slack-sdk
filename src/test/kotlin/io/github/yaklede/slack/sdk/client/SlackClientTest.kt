@@ -13,7 +13,8 @@ class SlackClientTest {
     private val config = ConfigurationProperties.fromResource("local.properties")
 
     private val client = SlackClient(
-        token = config[Key("SLACK_API_TOKEN", stringType)],
+        botToken = config[Key("SLACK_BOT_API_TOKEN", stringType)],
+        userToken = config[Key("SLACK_USER_API_TOKEN", stringType)],
         channel = config[Key("SLACK_API_CHANNEL", stringType)]
     )
 

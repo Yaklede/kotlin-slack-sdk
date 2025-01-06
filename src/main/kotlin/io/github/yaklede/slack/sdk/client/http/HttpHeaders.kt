@@ -9,6 +9,7 @@ class HttpHeaders {
     companion object {
         const val ACCEPT = "Accept"
         const val CONTENT_TYPE = "Content-Type"
+        const val AUTHORIZATION = "Authorization"
     }
 
     fun addHeader(key: String, value: String) {
@@ -24,7 +25,7 @@ class HttpHeaders {
     }
 
     fun addBearerToken(token: String) {
-        addHeader(ACCEPT, token)
+        addHeader(AUTHORIZATION, "Bearer $token")
     }
 
     fun setContentType(contentType: String) {
