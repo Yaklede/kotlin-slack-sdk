@@ -21,7 +21,6 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
 class HttpTemplate {
-
     fun <T : Any> execute(
         url: String,
         method: HttpMethod,
