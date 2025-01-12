@@ -41,3 +41,32 @@ data class AppsActivitiesListRequest(
     override val method: HttpMethod = HttpMethod.GET
 }
 
+/**
+ * @property appId 앱의 id
+ * @property externalTokenId 외부 토큰의 id
+ * @property providerKey 외부 토큰의 제공자 키
+ * @see <a href="https://api.slack.com/methods/apps.auth.external.delete">apps.auth.external.delete</a>
+ */
+data class AppsAuthExternalDelete(
+    val appId: String? = null,
+    val externalTokenId: String? = null,
+    val providerKey: String? = null
+): BotTokenSlackRequest {
+    override val contentType: MediaType = MediaType.APPLICATION_X_WWW_FORM_URLENCODED
+    override val endpoint: String = "apps.auth.external.delete"
+    override val method: HttpMethod = HttpMethod.POST
+}
+
+class AppsAuthExternalDeleteBuilder {
+    var appId: String? = null
+    var externalTokenId: String? = null
+    var providerKey: String? = null
+
+    fun build(): AppsAuthExternalDelete {
+        return AppsAuthExternalDelete(appId, externalTokenId, providerKey)
+    }
+}
+
+fun appsAuthExternalDelete(builder: AppsAuthExternalDeleteBuilder.() -> Unit): AppsAuthExternalDelete {
+    return AppsAuthExternalDeleteBuilder().apply(builder).build()
+}

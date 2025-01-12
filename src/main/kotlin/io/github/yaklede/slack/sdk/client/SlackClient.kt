@@ -24,4 +24,8 @@ class SlackClient(
     fun appsActivitiesList(request: AppsActivitiesListRequest): AppsActivitiesListResponse? {
         return slackTemplate.execute(request, AppsActivitiesListResponse::class)
     }
+
+    fun appsAuthExternalDelete(request: AppsAuthExternalDelete): AppsAuthExternalDeleteResponse? {
+        return slackTemplate.execute(request, AppsAuthExternalDeleteResponse::class)
+    }
 }

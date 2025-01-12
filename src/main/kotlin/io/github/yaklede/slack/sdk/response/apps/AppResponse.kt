@@ -202,4 +202,12 @@ data class Activity(
     val payload: AppsActivityPayload,
     val created: Long,
     val traceId: String,
-)
+))
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class AppsAuthExternalDeleteResponse(
+    val ok: Boolean,
+    val error: String? = null
+): SlackResponse {
+    override fun isSuccess(): Boolean = true
+}

@@ -76,4 +76,31 @@ class SlackClientTest {
         Assertions.assertThat(data).isInstanceOf(ApiTestResponse::class.java)
     }
 
+    @Test
+    fun appsAuthExternalDeleteTest() {
+        //given
+        val request = AppsAuthExternalDelete(
+            appId = APP_ID,
+            externalTokenId = UUID.randomUUID().toString()
+        )
+        //when
+        val data = client.appsAuthExternalDelete(request)
+
+        //then
+        Assertions.assertThat(data).isInstanceOf(AppsAuthExternalDeleteResponse::class.java)
+    }
+
+    @Test
+    fun appsAuthExternalDeleteWithBlockTest() {
+        //given
+        val request = appsAuthExternalDelete {
+            appId = APP_ID
+            externalTokenId = UUID.randomUUID().toString()
+        }
+        //when
+        val data = client.appsAuthExternalDelete(request)
+
+        //then
+        Assertions.assertThat(data).isInstanceOf(AppsAuthExternalDeleteResponse::class.java)
+    }
 }
