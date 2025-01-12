@@ -4,6 +4,11 @@ import io.github.yaklede.slack.sdk.client.http.enums.HttpMethod
 import io.github.yaklede.slack.sdk.client.http.enums.MediaType
 import io.github.yaklede.slack.sdk.request.BotTokenSlackRequest
 
+/**
+ * @property error 샘플 error
+ * @property foo 샘플 foo
+ * @see<a href="https://api.slack.com/methods/api.test">api.test</a>
+ */
 data class ApiTestRequest(
     val error: String,
     val foo: String,
