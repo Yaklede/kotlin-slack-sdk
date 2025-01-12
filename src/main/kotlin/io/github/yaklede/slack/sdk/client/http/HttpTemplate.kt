@@ -1,6 +1,7 @@
 package io.github.yaklede.slack.sdk.client.http
 
 import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.yaklede.slack.sdk.client.http.annotations.FormFormat
 import io.github.yaklede.slack.sdk.client.http.annotations.FormProperty
 import io.github.yaklede.slack.sdk.client.http.enums.HttpMethod
@@ -9,6 +10,7 @@ import io.github.yaklede.slack.sdk.client.http.exception.HttpClientException
 import io.github.yaklede.slack.sdk.client.http.exception.ParseException
 import io.github.yaklede.slack.sdk.config.mapper
 import io.github.yaklede.slack.sdk.request.SlackRequest
+import io.github.yaklede.slack.sdk.request.enums.NamingType
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -64,10 +66,26 @@ class HttpTemplate {
 
         return when (entity.getContentType()) {
             MediaType.APPLICATION_JSON.value -> {
+                val jsonBody = entity.body?.let { body ->
+                    val jsonMap = body::class.memberProperties
+                        .filterNot { prop -> SlackRequest::class.memberProperties.any { it.name == prop.name } }
+                        .associate { prop ->
+                            val key = prop.name
+                            val formattedKey = formatKey(key, (entity.body as? SlackRequest)?.naming ?: NamingType.CAMEL_CASE)
+                            formattedKey to prop.getter.call(body)
+                        }
+                    ObjectMapper().writeValueAsString(jsonMap)
+                } ?: "{}"
+
+                val httpRequestBody = when(jsonBody) {
+                    "{}" -> HttpRequest.BodyPublishers.noBody()
+                    else -> HttpRequest.BodyPublishers.ofString(jsonBody)
+                }
+
                 HttpRequest.newBuilder(URI.create(url))
                     .method(
                         method.name,
-                        extractRequest(entity.body)
+                        httpRequestBody,
                     ).apply {
                         entity.getHeaders().entries.forEach { (key, value) ->
                             this.setHeader(key, value)
@@ -81,8 +99,8 @@ class HttpTemplate {
                         .filterNot { prop -> SlackRequest::class.memberProperties.any { it.name == prop.name } }
                         .joinToString("&") { prop ->
                             val formProperty = prop.findAnnotation<FormProperty>()
-
                             val key = formProperty?.name ?: prop.name
+                            val formattedKey = formatKey(key, (entity.body as? SlackRequest)?.naming ?: NamingType.CAMEL_CASE)
                             val value = prop.getter.call(body)?.toString() ?: ""
 
                             val formFormat = prop.findAnnotation<FormFormat>()
@@ -90,27 +108,18 @@ class HttpTemplate {
                                 val pattern = it.pattern
                                 val formattedValue = when (val propValue = prop.getter.call(body)) {
                                     is LocalDate -> propValue.format(
-                                        java.time.format.DateTimeFormatter.ofPattern(
-                                            pattern
-                                        )
+                                        java.time.format.DateTimeFormatter.ofPattern(pattern)
                                     )
-
                                     is LocalDateTime -> propValue.format(
-                                        java.time.format.DateTimeFormatter.ofPattern(
-                                            pattern
-                                        )
+                                        java.time.format.DateTimeFormatter.ofPattern(pattern)
                                     )
-
                                     is LocalTime -> propValue.format(
-                                        java.time.format.DateTimeFormatter.ofPattern(
-                                            pattern
-                                        )
+                                        java.time.format.DateTimeFormatter.ofPattern(pattern)
                                     )
-
                                     else -> throw IllegalArgumentException("Unsupported format type for @FormFormat on ${prop.name}")
                                 }
-                                "$key=$formattedValue"
-                            } ?: "$key=$value"
+                                "$formattedKey=$formattedValue"
+                            } ?: "$formattedKey=$value"
                         }
                 } ?: ""
 
@@ -129,8 +138,9 @@ class HttpTemplate {
                 val boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
                 val formDataBody = entity.body?.let { body ->
                     body::class.memberProperties.joinToString("\r\n") { prop ->
+                        val formattedKey = formatKey(prop.name, (entity.body as? SlackRequest)?.naming ?: NamingType.CAMEL_CASE)
                         "--$boundary\r\n" +
-                                "Content-Disposition: form-data; name=\"${prop.name}\"\r\n\r\n" +
+                                "Content-Disposition: form-data; name=\"$formattedKey\"\r\n\r\n" +
                                 "${prop.getter.call(body)}"
                     } + "\r\n--$boundary--\r\n"
                 } ?: ""
@@ -147,6 +157,13 @@ class HttpTemplate {
             }
 
             else -> throw IllegalArgumentException("Unsupported media type: ${entity.getContentType()}")
+        }
+    }
+
+    private fun formatKey(key: String, naming: NamingType): String {
+        return when (naming) {
+            NamingType.CAMEL_CASE -> key
+            NamingType.SNAKE_CASE -> key.split(Regex("(?=[A-Z])")).joinToString("_").lowercase()
         }
     }
 
