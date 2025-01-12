@@ -3,13 +3,16 @@ package io.github.yaklede.slack.sdk.client
 import com.natpryce.konfig.ConfigurationProperties
 import com.natpryce.konfig.Key
 import com.natpryce.konfig.stringType
-import io.github.yaklede.slack.sdk.request.apps.AppsActivitiesListRequest
+import io.github.yaklede.slack.sdk.request.apps.*
 import io.github.yaklede.slack.sdk.request.test.ApiTestRequest
 import io.github.yaklede.slack.sdk.request.test.apiTestApiRequest
+import io.github.yaklede.slack.sdk.response.apps.AppsAuthExternalDeleteResponse
+import io.github.yaklede.slack.sdk.response.apps.AppsAuthExternalGetResponse
 import io.github.yaklede.slack.sdk.response.test.ApiTestResponse
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 class SlackClientTest {
     private val config = ConfigurationProperties.fromResource("local.properties")
@@ -66,7 +69,7 @@ class SlackClientTest {
     fun appsActivitiesListTest() {
         //given
         val request = AppsActivitiesListRequest(
-            appId = "appId"
+            appId = APP_ID
         )
 
         //when
@@ -102,5 +105,36 @@ class SlackClientTest {
 
         //then
         Assertions.assertThat(data).isInstanceOf(AppsAuthExternalDeleteResponse::class.java)
+    }
+
+    @Test
+    fun appsAuthExternalGetTest() {
+        //given
+        val request = AppsAuthExternalGet(
+            appId = APP_ID,
+            externalTokenId = USER_TOKEN,
+            forceRefresh = false
+        )
+
+        //when
+        val data = client.appsAuthExternalGet(request)
+
+        //then
+        Assertions.assertThat(data).isInstanceOf(AppsAuthExternalGetResponse::class.java)
+    }
+
+    @Test
+    fun appsAuthExternalGetWithBlockTest() {
+        //given
+        val request = appsAuthExternalGet {
+            appId = APP_ID
+            externalTokenId = USER_TOKEN
+            forceRefresh = false
+        }
+        //when
+        val data = client.appsAuthExternalGet(request)
+
+        //then
+        Assertions.assertThat(data).isInstanceOf(AppsAuthExternalGetResponse::class.java)
     }
 }

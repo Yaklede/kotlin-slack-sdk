@@ -2,7 +2,7 @@ package io.github.yaklede.slack.sdk.request.apps
 
 import io.github.yaklede.slack.sdk.client.http.enums.HttpMethod
 import io.github.yaklede.slack.sdk.client.http.enums.MediaType
-import io.github.yaklede.slack.sdk.request.SlackRequest
+import io.github.yaklede.slack.sdk.request.BotTokenSlackRequest
 import io.github.yaklede.slack.sdk.request.UserTokenSlackReqeust
 
 /**
@@ -19,6 +19,7 @@ import io.github.yaklede.slack.sdk.request.UserTokenSlackReqeust
  * @property source 선택: 로그 이벤트의 소스 ('slack' 또는 'developer')
  * @property teamId 선택: 로그를 소유한 팀의 ID
  * @property traceId 선택: 로그 이벤트의 추적 ID
+ * @see <a href="https://api.slack.com/methods/apps.activities.list">apps.activities.list</a>
  */
 @Deprecated("only workflows apps")
 data class AppsActivitiesListRequest(
@@ -69,4 +70,34 @@ class AppsAuthExternalDeleteBuilder {
 
 fun appsAuthExternalDelete(builder: AppsAuthExternalDeleteBuilder.() -> Unit): AppsAuthExternalDelete {
     return AppsAuthExternalDeleteBuilder().apply(builder).build()
+}
+
+/**
+ * @property appId 앱의 id
+ * @property externalTokenId 발급할 token id
+ * @property forceRefresh 선택: 토큰을 강제로 갱신할지 여부
+ * @see <a href="https://api.slack.com/methods/apps.auth.external.get">apps.auth.external.get</a>
+ */
+data class AppsAuthExternalGet(
+    val appId: String,
+    val externalTokenId: String,
+    val forceRefresh: Boolean? = null
+): BotTokenSlackRequest {
+    override val contentType: MediaType = MediaType.APPLICATION_X_WWW_FORM_URLENCODED
+    override val endpoint: String = "apps.auth.external.get"
+    override val method: HttpMethod = HttpMethod.POST
+}
+
+class AppsAuthExternalGetBuilder {
+    lateinit var appId: String
+    lateinit var externalTokenId: String
+    var forceRefresh: Boolean? = null
+
+    fun build(): AppsAuthExternalGet {
+        return AppsAuthExternalGet(appId, externalTokenId, forceRefresh)
+    }
+}
+
+fun appsAuthExternalGet(builder: AppsAuthExternalGetBuilder.() -> Unit): AppsAuthExternalGet {
+    return AppsAuthExternalGetBuilder().apply(builder).build()
 }
