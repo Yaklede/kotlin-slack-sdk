@@ -14,10 +14,19 @@ import org.junit.jupiter.api.Test
 class SlackClientTest {
     private val config = ConfigurationProperties.fromResource("local.properties")
 
+    private val APP_ID = config[Key("SLACK_APP_ID", stringType)]
+    private val CLIENT_ID = config[Key("SLACK_CLIENT_ID", stringType)]
+    private val CLIENT_SECRET = config[Key("SLACK_CLIENT_SECRET", stringType)]
+    private val SIGNING_SECRET = config[Key("SLACK_SIGNING_SECRET", stringType)]
+    private val VERIFICATION_TOKEN = config[Key("SLACK_VERIFICATION_TOKEN", stringType)]
+    private val BOT_TOKEN = config[Key("SLACK_BOT_API_TOKEN", stringType)]
+    private val USER_TOKEN = config[Key("SLACK_USER_API_TOKEN", stringType)]
+    private val CHANNEL = config[Key("SLACK_API_CHANNEL", stringType)]
+
     private val client = SlackClient(
-        botToken = config[Key("SLACK_BOT_API_TOKEN", stringType)],
-        userToken = config[Key("SLACK_USER_API_TOKEN", stringType)],
-        channel = config[Key("SLACK_API_CHANNEL", stringType)]
+        botToken = BOT_TOKEN,
+        userToken = USER_TOKEN,
+        channel = CHANNEL
     )
 
     @Test
