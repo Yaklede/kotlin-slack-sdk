@@ -97,11 +97,11 @@ class HttpTemplate {
                 val formBody = entity.body?.let { body ->
                     body::class.memberProperties
                         .filterNot { prop -> SlackRequest::class.memberProperties.any { it.name == prop.name } }
-                        .joinToString("&") { prop ->
+                        .mapNotNull { prop ->
                             val formProperty = prop.findAnnotation<FormProperty>()
                             val key = formProperty?.name ?: prop.name
                             val formattedKey = formatKey(key, (entity.body as? SlackRequest)?.naming ?: NamingType.CAMEL_CASE)
-                            val value = prop.getter.call(body)?.toString() ?: ""
+                            val value = prop.getter.call(body)?.toString()
 
                             val formFormat = prop.findAnnotation<FormFormat>()
                             formFormat?.let {
@@ -118,11 +118,14 @@ class HttpTemplate {
                                     )
                                     else -> throw IllegalArgumentException("Unsupported format type for @FormFormat on ${prop.name}")
                                 }
-                                "$formattedKey=$formattedValue"
-                            } ?: "$formattedKey=$value"
+                                if (formattedValue.isNotEmpty()) "$formattedKey=$formattedValue" else null
+                            } ?: value?.takeIf { it.isNotEmpty() }?.let {
+                                "$formattedKey=$it"
+                            }
                         }
+                        .joinToString("&")
                 } ?: ""
-
+                
                 HttpRequest.newBuilder(URI.create(url))
                     .method(
                         method.name,
