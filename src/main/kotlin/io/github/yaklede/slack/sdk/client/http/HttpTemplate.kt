@@ -65,19 +65,21 @@ class HttpTemplate {
         }
 
         return when (entity.getContentType()) {
-            MediaType.APPLICATION_JSON.value -> {
+            MediaType.APPLICATION_JSON.value,
+            MediaType.APPLICATION_JSON_UTF8.value -> {
                 val jsonBody = entity.body?.let { body ->
                     val jsonMap = body::class.memberProperties
                         .filterNot { prop -> SlackRequest::class.memberProperties.any { it.name == prop.name } }
                         .associate { prop ->
                             val key = prop.name
-                            val formattedKey = formatKey(key, (entity.body as? SlackRequest)?.naming ?: NamingType.CAMEL_CASE)
+                            val formattedKey =
+                                formatKey(key, (entity.body as? SlackRequest)?.naming ?: NamingType.CAMEL_CASE)
                             formattedKey to prop.getter.call(body)
                         }
                     ObjectMapper().writeValueAsString(jsonMap)
                 } ?: "{}"
 
-                val httpRequestBody = when(jsonBody) {
+                val httpRequestBody = when (jsonBody) {
                     "{}" -> HttpRequest.BodyPublishers.noBody()
                     else -> HttpRequest.BodyPublishers.ofString(jsonBody)
                 }
@@ -141,7 +143,8 @@ class HttpTemplate {
                 val boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
                 val formDataBody = entity.body?.let { body ->
                     body::class.memberProperties.joinToString("\r\n") { prop ->
-                        val formattedKey = formatKey(prop.name, (entity.body as? SlackRequest)?.naming ?: NamingType.CAMEL_CASE)
+                        val formattedKey =
+                            formatKey(prop.name, (entity.body as? SlackRequest)?.naming ?: NamingType.CAMEL_CASE)
                         "--$boundary\r\n" +
                                 "Content-Disposition: form-data; name=\"$formattedKey\"\r\n\r\n" +
                                 "${prop.getter.call(body)}"
