@@ -127,7 +127,7 @@ class HttpTemplate {
                         }
                         .joinToString("&")
                 } ?: ""
-                
+
                 HttpRequest.newBuilder(URI.create(url))
                     .method(
                         method.name,
